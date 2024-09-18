@@ -1,0 +1,115 @@
+index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+        <input type="text" id="locationInput" placeholder="Enter location" />
+        <button id="fetchWeatherBtn">Get Weather</button>
+        <div id="weatherDisplay" class="weather-info">
+            <h2 id="locationName"></h2>
+            <p id="temperature"></p>
+            <p id="conditions"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+style.css
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f8ff;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.weather-info {
+    margin-top: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-bottom: 10px;
+}
+
+
+script.js
+
+const apiKey = 'your_api_key_here';
+const fetchWeatherBtn = document.getElementById('fetchWeatherBtn');
+const locationInput = document.getElementById('locationInput');
+const locationName = document.getElementById('locationName');
+const temperature = document.getElementById('temperature');
+const conditions = document.getElementById('conditions');
+
+fetchWeatherBtn.addEventListener('click', () => {
+    const location = locationInput.value;
+    if (location) {
+        fetchWeatherData(location);
+    }
+});
+
+function fetchWeatherData(location) {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${apiKey}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.cod === 200) {
+                displayWeatherData(data);
+            } else {
+                alert('Location not found');
+            }
+        })
+        .catch(error => console.error('Error fetching weather data:', error));
+}
+
+function displayWeatherData(data) {
+    locationName.textContent = `${data.name}, ${data.sys.country}`;
+    temperature.textContent = `Temperature: ${data.main.temp}°C`;
+    conditions.textContent = `Conditions: ${data.weather[0].description}`;
+}
